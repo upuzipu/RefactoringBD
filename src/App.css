@@ -1,0 +1,121 @@
+@font-face {
+    font-family: CircularStd-Black;
+    src: url('fonts/CircularStd-Black.otf');
+}
+
+@font-face {
+    font-family: CircularStd-BlackItalic;
+    src: url('fonts/CircularStd-BlackItalic.otf');
+}
+
+@font-face {
+    font-family: CircularStd-Bold;
+    src: url('fonts/CircularStd-Bold.otf');
+}
+
+@font-face {
+    font-family: CircularStd-BoldItalic;
+    src: url('fonts/CircularStd-BoldItalic.otf');
+}
+
+@font-face {
+    font-family: CircularStd-Book;
+    src: url('fonts/CircularStd-Book.otf');
+}
+
+@font-face {
+    font-family: CircularStd-BookItalic;
+    src: url('fonts/CircularStd-BookItalic.otf');
+}
+
+@font-face {
+    font-family: CircularStd-Medium;
+    src: url('fonts/CircularStd-Medium.otf');
+}
+
+@font-face {
+    font-family: CircularStd-MediumItalic;
+    src: url('fonts/CircularStd-MediumItalic.otf');
+}
+
+*::selection {
+    background: #183a02;
+}
+
+body,
+p,
+h1,
+h2,
+h3 {
+    margin: 0 auto;
+    padding: 0;
+}
+
+h1 {
+  font-size: 128px;
+  font-family: CircularStd-Black, serif;
+}
+
+h2 {
+  font-size: 64px;
+  font-family: CircularStd-Black, serif;
+}
+
+h3 {
+  font-size: 32px;
+  font-family: CircularStd-Book, serif;
+}
+
+p {
+  font-size: 16px;
+  font-family: CircularStd-Book, sans-serif;
+}
+
+@media (max-width: 500px) {
+    .github-corner:hover .octo-arm {
+        animation: none
+    }
+
+    .github-corner .octo-arm {
+        animation: octocat-wave 560ms ease-in-out
+    }
+}
+
+body {
+    font-family: 'Proxima Nova', Georgia, sans-serif;
+    background-repeat: no-repeat, repeat;
+    background-image: linear-gradient(rgb(43, 110, 53), rgb(4, 11, 5));
+    color: #fff;
+    width: 100%;
+    height: 850px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.app-container {
+    display: flex;
+    position: relative;
+}
+
+.left-side-section {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    bottom: 10px;
+    width: 180px;
+    overflow-y: auto;
+}
+
+.main-section {
+    width: 900px;
+    position: relative;
+    left: 200px;
+    padding: 0 10px;
+}
+
+.main-section-container {
+    position: relative;
+    top: 50px;
+    padding-bottom: 100px;
+}

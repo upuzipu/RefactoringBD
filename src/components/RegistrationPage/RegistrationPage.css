@@ -1,0 +1,45 @@
+.RegistrationForm {
+    display: block;
+}
+
+.header {
+    margin: auto;
+    font-size: 64px;
+    text-align: center;
+}
+
+.form {
+    text-align: center;
+    margin-top: 10px;
+}
+
+input {
+    margin-top: 5px;
+    width: 400px;
+    height: 50px;
+    color: #ffffff;
+    background-color: #000000;
+    font-size: 20px;
+    border-radius: 500px;
+    padding: 18px 48px 16px;
+    transition-property: background-color;
+    transition-duration: .3s;
+    border-width: 0;
+    letter-spacing: 2px;
+    min-width: 160px;
+    text-transform: uppercase;
+    white-space: normal;
+    cursor: pointer;
+}
+
+input:hover {
+    background-color: white;
+    color: black;
+    transition: .7s;
+}
+
+h3 {
+    margin-top: 5px;
+    text-align: left;
+    margin-left: 34%;
+}

@@ -1,0 +1,45 @@
+.header {
+    margin: auto;
+    font-size: 64px;
+    text-align: center;
+}
+
+.freakify {
+    width: 300px;
+    height: 300px;
+}
+
+.btns {
+    width: 300px;
+    height: 300px;
+    display: block;
+    margin-left: 500px;
+    padding-top: 2%;
+    text-align: center;
+}
+
+.login {
+    margin-bottom: 25px;
+}
+
+.registration_btn, .login_btn {
+    color: #000000;
+    background-color: #36ff00;
+    font-size: 14px;
+    line-height: 1;
+    border-radius: 500px;
+    transition-property: background-color;
+    transition-duration: .3s;
+    border-width: 0;
+    letter-spacing: 2px;
+    min-width: 160px;
+    text-transform: uppercase;
+    white-space: normal;
+    cursor: pointer;
+}
+
+.registration_btn:hover, .login_btn:hover {
+    background-color: #184900;
+    color: #fff;
+    transition: .3s;
+}
