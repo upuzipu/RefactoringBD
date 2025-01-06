@@ -7,18 +7,28 @@ import com.example.model.entity.Artist;
 import com.example.repository.ArtistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service for working with artists.
+ * Provides methods for retrieving information about artists, including searching by name and getting an artist by ID.
+ */
 @Service
 @RequiredArgsConstructor
 public class ArtistService {
 
     private final ArtistRepository artistRepository;
 
+    /**
+     * Get all artists matching the search query by name.
+     *
+     * @param name the name of the artist to search for (can be null or empty to retrieve all artists)
+     * @param offset the offset for pagination
+     * @param limit the number of items per page
+     * @return an {@link ArtistSearchResponseDto} object containing the list of artists and pagination information
+     */
     public ArtistSearchResponseDto getAllArtistsByName(String name, int offset, int limit) {
         int count = (name != null && !name.isEmpty()) ?
                 artistRepository.countByNameContaining(name) :
@@ -34,12 +44,25 @@ public class ArtistService {
         return new ArtistSearchResponseDto(artists.stream().map(this::mapToDto).collect(Collectors.toList()), count, currentPage, totalPages);
     }
 
+    /**
+     * Get an artist by their ID.
+     *
+     * @param artistId the artist's ID
+     * @return an {@link ArtistResponseDto} object containing the artist's information
+     * @throws EntityNotFoundException if no artist with the given ID is found
+     */
     public ArtistResponseDto getArtistById(long artistId) {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new EntityNotFoundException("Artist not found"));
         return mapToDto(artist);
     }
 
+    /**
+     * Converts the {@link Artist} entity to an {@link ArtistResponseDto} object.
+     *
+     * @param artist the artist to convert
+     * @return an {@link ArtistResponseDto} object
+     */
     private ArtistResponseDto mapToDto(Artist artist) {
         ArtistResponseDto dto = new ArtistResponseDto();
         dto.setId(artist.getArtistId());

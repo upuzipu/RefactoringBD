@@ -16,14 +16,25 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service for managing songs.
+ * Handles creating, searching songs by different filters, and retrieving the song file.
+ */
 @Service
 @RequiredArgsConstructor
 public class SongService {
 
     private final SongRepository songRepository;
 
+    /**
+     * Retrieves all songs with the option to filter by name and paginate.
+     *
+     * @param name   the name of the song to filter by
+     * @param offset the offset for pagination
+     * @param limit  the limit for pagination
+     * @return a {@link SongSearchResponseDto} containing song information, total count, and the current page
+     */
     public SongSearchResponseDto getAllSongsByName(String name, int offset, int limit) {
-
         int count = (name != null && !name.isEmpty()) ?
                 songRepository.countByNameContaining(name) :
                 songRepository.count();
@@ -37,24 +48,48 @@ public class SongService {
                 songRepository.findAll(offset, limit);
         var songsDto = songs.stream().map(this::mapToDto).collect(Collectors.toList());
         return new SongSearchResponseDto(songsDto, count, currentPage, totalPages);
-
     }
 
+    /**
+     * Retrieves all songs by a specific artist.
+     *
+     * @param artistId the ID of the artist
+     * @return a list of {@link SongResponseDto} containing information about the artist's songs
+     */
     public List<SongResponseDto> getAllSongsByArtist(long artistId) {
         List<Song> songs = songRepository.findByArtistId(artistId);
         return songs.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all songs from a specific album.
+     *
+     * @param albumId the ID of the album
+     * @return a list of {@link SongResponseDto} containing information about the album's songs
+     */
     public List<SongResponseDto> getAllSongsByAlbum(long albumId) {
         List<Song> songs = songRepository.findByAlbumId(albumId);
         return songs.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all songs by a user based on their user ID.
+     *
+     * @param userId the ID of the user
+     * @return a list of {@link SongResponseDto} containing information about the user's songs
+     */
     public List<SongResponseDto> getAllSongsByUser(long userId) {
         List<Song> songs = songRepository.findByUserId(userId);
         return songs.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves the MP3 file of a song by its ID.
+     *
+     * @param songId the ID of the song
+     * @return a byte array containing the MP3 file data
+     * @throws ResponseStatusException if the song is not found or there is an error reading the file
+     */
     public byte[] getMp3ById(long songId) {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Song not found"));
@@ -66,6 +101,12 @@ public class SongService {
         }
     }
 
+    /**
+     * Converts a song entity into a DTO object.
+     *
+     * @param song the {@link Song} entity to be converted
+     * @return a {@link SongResponseDto} containing information about the song
+     */
     private SongResponseDto mapToDto(Song song) {
         SongResponseDto dto = new SongResponseDto();
         dto.setId(song.getSongId());
