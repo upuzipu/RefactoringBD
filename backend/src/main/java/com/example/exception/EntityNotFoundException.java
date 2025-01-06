@@ -1,7 +1,17 @@
 package com.example.exception;
 
-public class EntityNotFoundException extends RuntimeException{
+/**
+ * Exception thrown when an entity (e.g., user, album, or song)
+ * cannot be found in the database or system.
+ */
+public class EntityNotFoundException extends RuntimeException {
+
+    /**
+     * Constructor that accepts an error message.
+     *
+     * @param message the message that will be passed to the parent constructor.
+     */
     public EntityNotFoundException(String message) {
-        super(message);
+        super(message);  // Call the parent class constructor with the error message
     }
 }

@@ -1,0 +1,16 @@
+com.example
+com.example.configuration
+com.example.controller
+com.example.dto.album
+com.example.dto.artist
+com.example.dto.authentication
+com.example.dto.playlist
+com.example.dto.song
+com.example.exception
+com.example.exception.handler
+com.example.filter
+com.example.model.entity
+com.example.model.enumeration
+com.example.repository
+com.example.service
+com.example.utils

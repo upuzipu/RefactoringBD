@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service for managing playlists.
+ * Handles creating, deleting, searching, and adding/removing songs in playlists.
+ */
 @Service
 @RequiredArgsConstructor
 public class PlaylistService {
@@ -21,6 +25,14 @@ public class PlaylistService {
     private final SongRepository songRepository;
     private final DetailsService detailsService;
 
+    /**
+     * Retrieves all playlists with the option to filter by name and paginate.
+     *
+     * @param name the name of the playlist to filter by
+     * @param offset the offset for pagination
+     * @param limit the limit for pagination
+     * @return a {@link PlaylistSearchResponseDto} containing playlist information, total count, and the current page
+     */
     public PlaylistSearchResponseDto getAllPlaylistsByName(String name, int offset, int limit) {
         int count = (name != null && !name.isEmpty()) ?
                 playlistRepository.countByNameContaining(name) :
@@ -36,11 +48,25 @@ public class PlaylistService {
         return new PlaylistSearchResponseDto(playlists.stream().map(this::mapToDto).toList(), count, currentPage, totalPages);
     }
 
+    /**
+     * Retrieves all playlists belonging to a specific creator.
+     *
+     * @param creatorId the ID of the playlist creator
+     * @return a list of {@link PlaylistResponseDto} containing playlist information
+     */
     public List<PlaylistResponseDto> getAllPlaylistsByCreator(long creatorId) {
         List<Playlist> playlists = playlistRepository.findByCreatorId(creatorId);
         return playlists.stream().map(this::mapToDto).toList();
     }
 
+    /**
+     * Adds a song to a playlist.
+     * Checks if the song exists, if it's already in the playlist, and if the user has permission to modify the playlist.
+     *
+     * @param playlistId the ID of the playlist
+     * @param songId the ID of the song
+     * @param username the username of the user
+     */
     public void addMusicToPlaylist(long playlistId, long songId, String username) {
         if (!songRepository.existsById(songId)) {
             throw new EntityNotFoundException("Song not found");
@@ -54,6 +80,15 @@ public class PlaylistService {
         playlistRepository.addSongToPlaylist(playlistId, songId);
     }
 
+    /**
+     * Removes a song from a playlist.
+     * Checks if the song exists and if the user has permission to modify the playlist.
+     *
+     * @param playlistId the ID of the playlist
+     * @param songId the ID of the song
+     * @param username the username of the user
+     * @param requestBody the request body
+     */
     public void removeMusicFromPlaylist(long playlistId, long songId, String username, String requestBody) {
         if (!songRepository.existsById(songId)) {
             throw new EntityNotFoundException("Song not found");
@@ -64,11 +99,24 @@ public class PlaylistService {
         playlistRepository.removeSongFromPlaylist(playlistId, songId);
     }
 
+    /**
+     * Creates a new playlist for a user.
+     *
+     * @param username the username of the user
+     * @param playlistName the name of the playlist
+     * @return the ID of the created playlist
+     */
     public long addNewPlaylist(String username, String playlistName) {
         long creatorId = detailsService.getIdByEmail(username);
         return playlistRepository.save(creatorId, playlistName);
     }
 
+    /**
+     * Converts a playlist object to a DTO.
+     *
+     * @param playlist the {@link Playlist} object to be converted
+     * @return a {@link PlaylistResponseDto} containing playlist information
+     */
     private PlaylistResponseDto mapToDto(Playlist playlist) {
         PlaylistResponseDto dto = new PlaylistResponseDto();
         dto.setId(playlist.getPlaylistId());
