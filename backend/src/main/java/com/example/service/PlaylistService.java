@@ -9,6 +9,7 @@ import com.example.model.entity.Playlist;
 import com.example.repository.PlaylistRepository;
 import com.example.repository.SongRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  * Handles creating, deleting, searching, and adding/removing songs in playlists.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PlaylistService {
 
@@ -34,6 +36,7 @@ public class PlaylistService {
      * @return a {@link PlaylistSearchResponseDto} containing playlist information, total count, and the current page
      */
     public PlaylistSearchResponseDto getAllPlaylistsByName(String name, int offset, int limit) {
+        log.info("Fetching playlists by name: {}, offset: {}, limit: {}", name, offset, limit);
         int count = (name != null && !name.isEmpty()) ?
                 playlistRepository.countByNameContaining(name) :
                 playlistRepository.count();
@@ -45,8 +48,10 @@ public class PlaylistService {
             totalPages++;
         }
         int currentPage = offset / limit + 1;
+        log.info("Found {} playlists, current page: {}, total pages: {}", count, currentPage, totalPages);
         return new PlaylistSearchResponseDto(playlists.stream().map(this::mapToDto).toList(), count, currentPage, totalPages);
     }
+
 
     /**
      * Retrieves all playlists belonging to a specific creator.
@@ -55,7 +60,9 @@ public class PlaylistService {
      * @return a list of {@link PlaylistResponseDto} containing playlist information
      */
     public List<PlaylistResponseDto> getAllPlaylistsByCreator(long creatorId) {
+        log.info("Fetching playlists by creator ID: {}", creatorId);
         List<Playlist> playlists = playlistRepository.findByCreatorId(creatorId);
+        log.info("Found {} playlists for creator ID: {}", playlists.size(), creatorId);
         return playlists.stream().map(this::mapToDto).toList();
     }
 
@@ -68,16 +75,21 @@ public class PlaylistService {
      * @param username the username of the user
      */
     public void addMusicToPlaylist(long playlistId, long songId, String username) {
+        log.info("Adding song ID: {} to playlist ID: {} by user: {}", songId, playlistId, username);
         if (!songRepository.existsById(songId)) {
+            log.error("Song not found: ID {}", songId);
             throw new EntityNotFoundException("Song not found");
         }
         if (playlistRepository.existsSongInPlaylist(playlistId, songId)) {
+            log.error("Song ID: {} already in playlist ID: {}", songId, playlistId);
             throw new AlreadyInPlaylistException("Already in playlist");
         }
         if (playlistRepository.findByCreatorId(detailsService.getIdByEmail(username)).stream().noneMatch(playlist -> playlist.getPlaylistId() == playlistId)) {
+            log.error("Access denied for user: {} to playlist ID: {}", username, playlistId);
             throw new AccessForbiddenException("Access denied");
         }
         playlistRepository.addSongToPlaylist(playlistId, songId);
+        log.info("Song ID: {} added to playlist ID: {}", songId, playlistId);
     }
 
     /**
@@ -90,13 +102,17 @@ public class PlaylistService {
      * @param requestBody the request body
      */
     public void removeMusicFromPlaylist(long playlistId, long songId, String username, String requestBody) {
+        log.info("Removing song ID: {} from playlist ID: {} by user: {}", songId, playlistId, username);
         if (!songRepository.existsById(songId)) {
+            log.error("Song not found: ID {}", songId);
             throw new EntityNotFoundException("Song not found");
         }
         if (playlistRepository.findByCreatorId(detailsService.getIdByEmail(username)).stream().noneMatch(playlist -> playlist.getPlaylistId() == playlistId)) {
+            log.error("Access denied for user: {} to playlist ID: {}", username, playlistId);
             throw new AccessForbiddenException("Access denied");
         }
         playlistRepository.removeSongFromPlaylist(playlistId, songId);
+        log.info("Song ID: {} removed from playlist ID: {}", songId, playlistId);
     }
 
     /**
@@ -107,8 +123,11 @@ public class PlaylistService {
      * @return the ID of the created playlist
      */
     public long addNewPlaylist(String username, String playlistName) {
+        log.info("Creating new playlist: {} for user: {}", playlistName, username);
         long creatorId = detailsService.getIdByEmail(username);
-        return playlistRepository.save(creatorId, playlistName);
+        long playlistId = playlistRepository.save(creatorId, playlistName);
+        log.info("New playlist created: ID {} for user: {}", playlistId, username);
+        return playlistId;
     }
 
     /**

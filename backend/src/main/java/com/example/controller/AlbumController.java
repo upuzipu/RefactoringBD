@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +44,7 @@ public class AlbumController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AlbumSearchResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = @Content)
     })
+    @Cacheable
     public ResponseEntity<AlbumSearchResponseDto> getAllAlbumsByName(
             @Parameter(description = "The name of the album to search for", example = "Thriller")
             @RequestParam(required = false) String name,

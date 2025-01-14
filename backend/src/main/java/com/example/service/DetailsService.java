@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.exception.EntityNotFoundException;
 import com.example.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;

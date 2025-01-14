@@ -6,6 +6,7 @@ import com.example.exception.EntityNotFoundException;
 import com.example.model.entity.Artist;
 import com.example.repository.ArtistRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * Service for working with artists.
  * Provides methods for retrieving information about artists, including searching by name and getting an artist by ID.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArtistService {
@@ -30,6 +32,7 @@ public class ArtistService {
      * @return an {@link ArtistSearchResponseDto} object containing the list of artists and pagination information
      */
     public ArtistSearchResponseDto getAllArtistsByName(String name, int offset, int limit) {
+        log.info("Fetching artists by name: {}, offset: {}, limit: {}", name, offset, limit);
         int count = (name != null && !name.isEmpty()) ?
                 artistRepository.countByNameContaining(name) :
                 artistRepository.count();
@@ -41,6 +44,7 @@ public class ArtistService {
         List<Artist> artists = (name != null && !name.isEmpty()) ?
                 artistRepository.findByNameContaining(name, offset, limit) :
                 artistRepository.findAll(offset, limit);
+        log.info("Found {} artists, current page: {}, total pages: {}", count, currentPage, totalPages);
         return new ArtistSearchResponseDto(artists.stream().map(this::mapToDto).collect(Collectors.toList()), count, currentPage, totalPages);
     }
 
@@ -52,8 +56,10 @@ public class ArtistService {
      * @throws EntityNotFoundException if no artist with the given ID is found
      */
     public ArtistResponseDto getArtistById(long artistId) {
+        log.info("Fetching artist by ID: {}", artistId);
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new EntityNotFoundException("Artist not found"));
+        log.info("Found artist: {}", artist.getNickname());
         return mapToDto(artist);
     }
 

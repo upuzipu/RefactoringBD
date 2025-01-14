@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,7 @@ public class ArtistController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ArtistSearchResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = @Content)
     })
+    @Cacheable
     public ResponseEntity<ArtistSearchResponseDto> getAllArtistsByName(
             @Parameter(description = "The name of the artist to search for", example = "Michael Jackson")
             @RequestParam(required = false) String name,

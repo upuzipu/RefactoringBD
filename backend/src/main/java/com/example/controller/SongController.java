@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class SongController {
             @ApiResponse(responseCode = "200", description = "List of songs successfully retrieved"),
             @ApiResponse(responseCode = "400", description = "Invalid request parameters")
     })
+    @Cacheable
     public ResponseEntity<SongSearchResponseDto> getAllSongsByName(
             @Parameter(description = "Song name to search for (optional)") @RequestParam(required = false) String name,
             @Parameter(description = "Pagination offset (default 0)") @RequestParam(defaultValue = "0") int offset,
