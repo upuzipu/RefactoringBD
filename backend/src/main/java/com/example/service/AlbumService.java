@@ -5,6 +5,9 @@ import com.example.dto.album.AlbumSearchResponseDto;
 import com.example.model.entity.Album;
 import com.example.repository.AlbumRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +19,11 @@ import java.util.stream.Collectors;
  * by an artist.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AlbumService {
+
+
 
     private final AlbumRepository albumRepository;
 
@@ -30,6 +36,7 @@ public class AlbumService {
      * @return an {@link AlbumSearchResponseDto} object containing the list of albums and pagination information
      */
     public AlbumSearchResponseDto getAllAlbumsByName(String name, int offset, int limit) {
+        log.info("Fetching albums by name: {}, offset: {}, limit: {}", name, offset, limit);
         int count = (name != null && !name.isEmpty()) ?
                 albumRepository.countByNameContaining(name) :
                 albumRepository.count();
@@ -41,6 +48,7 @@ public class AlbumService {
             totalPages++;
         }
         int currentPage = offset / limit + 1;
+        log.info("Found {} albums, current page: {}, total pages: {}", count, currentPage, totalPages);
         return new AlbumSearchResponseDto(albums.stream().map(this::mapToDto).collect(Collectors.toList()), count, currentPage, totalPages);
     }
 
@@ -51,7 +59,9 @@ public class AlbumService {
      * @return a list of {@link AlbumResponseDto} containing information about the artist's albums
      */
     public List<AlbumResponseDto> getAllAlbumsByArtist(long artistId) {
+        log.info("Fetching albums by artist ID: {}", artistId);
         List<Album> albums = albumRepository.findByArtistId(artistId);
+        log.info("Found {} albums for artist ID: {}", albums.size(), artistId);
         return albums.stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
